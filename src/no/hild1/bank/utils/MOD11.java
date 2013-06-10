@@ -1,4 +1,4 @@
-package no.hild1.bank;
+package no.hild1.bank.utils;
 
 public class MOD11 {
 

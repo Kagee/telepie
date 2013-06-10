@@ -2,8 +2,8 @@ package no.hild1.bank.test;
 
 import static org.junit.Assert.*;
 
-import no.hild1.bank.MOD10;
-import no.hild1.bank.MOD11;
+import no.hild1.bank.utils.MOD10;
+import no.hild1.bank.utils.MOD11;
 
 import org.junit.Test;
 
