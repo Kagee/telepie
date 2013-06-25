@@ -1,22 +1,19 @@
 package no.hild1.bank;
 
-class TelepayException extends Exception {
-	public TelepayException() {
+class TelepayParserException extends Exception {
+	public TelepayParserException() {
 		super();
 	}
 
-	public TelepayException(String message) {
+	public TelepayParserException(String message) {
 		super(message);
 	}
 
-	public TelepayException(String message, Throwable cause) {
+	public TelepayParserException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public TelepayException(Throwable cause) {
+	public TelepayParserException(Throwable cause) {
 		super(cause);
 	}
-
-	private static final long serialVersionUID = -4200483982924961856L;
-
 }
