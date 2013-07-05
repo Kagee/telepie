@@ -1,6 +1,6 @@
 package no.hild1.bank;
 
-class TelepayParserException extends Exception {
+public class TelepayParserException extends Exception {
 	public TelepayParserException() {
 		super();
 	}
@@ -8,7 +8,9 @@ class TelepayParserException extends Exception {
 	public TelepayParserException(String message) {
 		super(message);
 	}
-
+	public TelepayParserException(int record, String message) {
+		super("Record " + record + ": " + message);
+	}
 	public TelepayParserException(String message, Throwable cause) {
 		super(message, cause);
 	}
