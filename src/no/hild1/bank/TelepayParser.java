@@ -32,8 +32,6 @@ public class TelepayParser {
 		}
         numRecords = lines.length/4;
 		checkLines(lines);
-        records.add(parseRecord(1));
-        records.add(parseRecord(2));
 	}
 
 /*	public boolean parseAllRecords() throws TelepayParserException {
