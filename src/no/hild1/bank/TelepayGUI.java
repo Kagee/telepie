@@ -18,13 +18,14 @@ public class TelepayGUI extends JFrame {
 	private static final long serialVersionUID = -5121434288061327051L;
 	private JEditorPane htmlPane;
 
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
+
 	private static String bgc(String color) {
 		return "<span style=\"background-color: " + color + ";\">$1</span>";
 	}
+    /**
+     * @param content
+     * @throws IOException
+     */
 	public TelepayGUI(String content) throws IOException {
 		htmlPane = new JEditorPane();
 		content = content.replaceAll("\n", "\u23CE<br>");
