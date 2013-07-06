@@ -1,6 +1,8 @@
 package no.hild1.bank.telepay;
 
 public class Betfor01 extends Betfor {
+    /* makeBetforData.sh START */
+    /* makeBetforData.sh STOP */
     public Betfor01(BetforHeader header, String stringRecord) {
         super(header, stringRecord);
     }
