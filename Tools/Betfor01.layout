@@ -1,0 +1,36 @@
+APPLICATIONHEADER           40  X
+TRANSACTIONCODE             8   F   BETFOR01
+ENTERPRISENUMBER            11  N
+ACCOUNTNUMBER               11  N
+SEQUENCECONTROL             4   N
+REFERENCENUMBER             6   A
+PAYMENTDATE                 6   N   YYMMDD
+OWNREFERENCEORDER           30  A
+PAYMENTCURRENCY             3   A
+INVOICECURRENCY             3   A
+CHARGESABROAD               3   A   BEN
+CHARGESINNORWAY             3   A   OUR
+NOTIFICATIONINDICATOR       30  A
+PRIORITYCODE                1   A
+AGREEDEXCHANGERATE          8   N
+FORWARDCONTRACTNO           6   A
+FORWARDCONTRACTEXCHRATE     8   N
+CHEQUECODE                  1   A
+VALUEDATERECEIVINGBANK      6   N   YYMMDD
+RESERVED1                   2   A
+ACTUALEXCHANGERATE          12  N
+EXECUTIONREF2               12  A
+AMOUNTDEBITED               16  N
+AMOUNTTRANSFERRED           16  N
+CLIENTREFERENCE             5   A
+EXECUTIONREF1               6   N
+DEALMADEWITH                6   A
+CANCELLATIONCODE            1   A
+CLEARINGCODE                1   A
+VALUEDATE                   6   N   YYMMDD
+FEE                         9   N
+RATEAGAINSTNOK              12  N
+CANCELLATIONCAUSE           1   A
+ORDEREDTRANSFERREDAMOUNT    16  N
+PRICEINFO                   1   A
+RESERVED2                   10  A

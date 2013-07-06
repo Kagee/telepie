@@ -46,17 +46,29 @@ public class TelepayParser {
 
 	public Betfor parseRecord(int recordNum) throws TelepayParserException {
         int startLine = (recordNum-1)*4;
+        String foo = "";
+        foo = foo.trim();
         String recordString = lines[startLine] + lines[startLine+1] + lines[startLine+2] + lines[startLine+3];
+        if (recordString.length() != 320) {
+            throw new TelepayParserException("Record #" + recordNum + " is a total of "
+                    + recordString.length()
+                    + " characters long, should be 320.");
+        }
         BetforHeader header = new BetforHeader(recordString, recordNum);
-        log.info("Found BETFOR: " + header.getBetforType());
+        log.info("Probably BETFOR" + header.getBetforType());
         Betfor record;
+        log.info("Length: " + recordString.length());
+        String parsed = "";
         switch (header.getBetforType()) {
             case 0:
                 record = new Betfor00(header, recordString);
+                for (Betfor00.Element elem : Betfor00.Element.values()) {
+                    parsed += elem + ": '" + ((Betfor00) record).get(elem) + "'\n";
+                }
+                log.info(parsed);
                 return record;
             case 21:
                 record = new Betfor21(header, recordString);
-                String parsed = "";
                 for (Betfor21.Element elem : Betfor21.Element.values()) {
                     parsed += elem + ": '" + ((Betfor21) record).get(elem) + "'\n";
                 }
@@ -64,9 +76,17 @@ public class TelepayParser {
                 return record;
             case 23:
                 record = new Betfor23(header, recordString);
+                for (Betfor23.Element elem : Betfor23.Element.values()) {
+                    parsed += elem + ": '" + ((Betfor23) record).get(elem) + "'\n";
+                }
+                log.info(parsed);
                 return record;
             case 99:
                 record = new Betfor99(header, recordString);
+                for (Betfor99.Element elem : Betfor99.Element.values()) {
+                    parsed += elem + ": '" + ((Betfor99) record).get(elem) + "'\n";
+                }
+                log.info(parsed);
                 return record;
             default:
                 log.error("Unknown BETFOR type " + header.getBetforType());

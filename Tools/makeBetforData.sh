@@ -1,4 +1,4 @@
-set -x
+#set -x
 for F in *.layout; 
 do 
     awk -f MakeJava.awk $F >tmp.java; 
