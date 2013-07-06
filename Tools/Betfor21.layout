@@ -1,0 +1,26 @@
+APPLICATIONHEADER       40  X
+TRANSACTIONCODE         8   F   BETFOR21
+ENTERPRISENUMBER        11  N
+ACCOUNTNUMBER           11  N
+SEQUENCECONTROL         4   N
+REFERENCENUMBER         6   A
+PAYMENTDATE             6   N   YYMMDD
+OWNREFORDER             30  A
+RESERVED                1   A
+PAYEESACCOUNTNUMBER     11  N
+PAYEESNAME              30  A
+ADDRESS1                30  A
+ADDRESS2                30  A
+POSTCODE                4   N
+CITY                    26  A
+AMOUNTTOOWNACCOUNT      15  N             
+TEXTCODE                3   N
+TRANSFERCODE            1   A
+CANCELLATIONCODE        1   A
+TOTALAMOUNT             15  N
+CLIENTREFERENCE         5   A
+VALUEDATE               6   N   YYMMDD
+VALUEDATERECEIVINGBANK  6   N   YYMMDD
+CANCELLATIONCAUSE       1   A
+RESERVED2               9   A
+FORMNO                  10  N

@@ -1,0 +1,16 @@
+APPLICATIONHEADER               40  X
+TRANSACTIONCODE                 8   F   BETFOR23
+ENTERPRISENUMBER                11  N
+ACCOUNTNUMBER                   11  N
+SEQUENCECONTROL                 4   N
+REFERENCENUMBER                 6   A
+PAYEEREFINVOICE                 120  A  // Actually three fields of 40 
+KID                             27  A
+OWNREFERENCEINVOICE             30  A
+INVOICEAMOUNT                   15  N
+DEBITCREDITCODECANCELLATIONCODE 1   A
+INVOICENUMBER                   20  A
+SERIALNUMBER                    3   N
+CANCELLATIONCAUSE               1   A
+CUSTOMERNUMBER                  15  A
+INVOICEDATE                     8   A   YYYYMMDD
