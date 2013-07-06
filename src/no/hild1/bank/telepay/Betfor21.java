@@ -9,8 +9,9 @@ import java.util.regex.Pattern;
 
 public class Betfor21 extends Betfor {
 
+    /* makeBetforData.sh START */
     private static Log log = LogFactory.getLog(Betfor21.class);
-    private static String betforRegexp = "^(.{40})BETFOR21"
+    private static String betforaRegexp = "^(.{40})BETFOR21"
             + "(?<"+Element.ENTERPRISENUMBER.name()+">.{11})"
             + "(?<ACCOUNTNUMBER>.{11})"
             + "(?<SEQUENCECONTROL>.{4})"
@@ -22,8 +23,13 @@ public class Betfor21 extends Betfor {
             + "(?<PAYEESNAME>.{30})"
             + "(?<ADDRESS1>.{30})"
             + ".*";
-    public static Pattern betforPattern = Pattern.compile(betforRegexp);
+    private static Pattern betforPattern = Pattern.compile(betforaRegexp);
     Matcher m;
+
+    public enum Element {
+        ENTERPRISENUMBER, ACCOUNTNUMBER, SEQUENCECONTROL, REFERENCENUMBER, PAYMENTDATE, OWNREFORDER, RESERVED, PAYEESACCOUNTNUMBER, PAYEESNAME, ADDRESS1
+    }
+    /* makeBetforData.sh STOP */
 
     public Betfor21(BetforHeader header, String stringRecord) throws TelepayParserException {
         super(header, stringRecord);
@@ -37,8 +43,5 @@ public class Betfor21 extends Betfor {
 
     public String get(Element e) {
         return m.group(((Element)e).name());
-    }
-    public enum Element {
-        ENTERPRISENUMBER, ACCOUNTNUMBER, SEQUENCECONTROL, REFERENCENUMBER, PAYMENTDATE, OWNREFORDER, RESERVED, PAYEESACCOUNTNUMBER, PAYEESNAME, ADDRESS1;
     }
 }
