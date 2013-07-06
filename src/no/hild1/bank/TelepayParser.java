@@ -22,47 +22,56 @@ public class TelepayParser {
 	String[] lines;
     int numRecords = 0;
     ArrayList<Betfor> records = new ArrayList<Betfor>();
+    File file;
 	public TelepayParser(File file) throws TelepayParserException, IOException {
-		checkEncoding(file);
-		String source = FileUtils.readFileToString(file, "ISO_8859_1");
-		lines = source.split("\n");
-		if (lines.length % 4 != 0) {
-			throw new TelepayParserException(
-					"Lines in file is not a multiple of 4");
-		}
+        this.file = file;
+	}
+    public void basicCheck() throws TelepayParserException, IOException {
+        checkEncoding(file);
+        String source = FileUtils.readFileToString(file, "ISO_8859_1");
+        lines = source.split("\n");
+        if (lines.length % 4 != 0) {
+            throw new TelepayParserException(
+                    "Lines in file is not a multiple of 4");
+        }
         numRecords = lines.length/4;
-		checkLines(lines);
-	}
-
-/*	public boolean parseAllRecords() throws TelepayParserException {
-		for (int i = 1; i < (lines.length / 4); i++) {
+        checkLines(lines);
+    }
+	public void parseAllRecords() throws TelepayParserException {
+		for (int i = 1; i <= (lines.length / 4); i++) {
 			log.info(i);
-			if (!parseRecord(i)) {
-				return false;
-			}
-		}
-		return true;
-	}*/
-
-	public Betfor parseRecord(int record) throws TelepayParserException {
-
-        int startLine = (record-1)*4;
-        String recordString = lines[startLine] + lines[startLine+1] + lines[startLine+2] + lines[startLine+3];
-        BetforHeader header = getHeader(lines[(record-1)*4], record);
-        return new Betfor();
+            records.add(parseRecord(i));
+        }
 	}
 
-
-
-	private BetforHeader getHeader(String string, int record) throws TelepayParserException {
-		log.info("Parsing header");
-		log.info(string);
-		Matcher m = Consts.appHeaderPattern.matcher(string);
-		if (m.find()) {
-			log.info(m.group("AHID"));
-			return new BetforHeader(m, record);
-		}
-		return null;
+	public Betfor parseRecord(int recordNum) throws TelepayParserException {
+        int startLine = (recordNum-1)*4;
+        String recordString = lines[startLine] + lines[startLine+1] + lines[startLine+2] + lines[startLine+3];
+        BetforHeader header = new BetforHeader(recordString, recordNum);
+        log.info("Found BETFOR: " + header.getBetforType());
+        Betfor record;
+        switch (header.getBetforType()) {
+            case 0:
+                record = new Betfor00(header, recordString);
+                return record;
+            case 21:
+                record = new Betfor21(header, recordString);
+                String parsed = "";
+                for (Betfor21.Element elem : Betfor21.Element.values()) {
+                    parsed += elem + ": '" + ((Betfor21) record).get(elem) + "'\n";
+                }
+                log.info(parsed);
+                return record;
+            case 23:
+                record = new Betfor23(header, recordString);
+                return record;
+            case 99:
+                record = new Betfor99(header, recordString);
+                return record;
+            default:
+                log.error("Unknown BETFOR type " + header.getBetforType());
+                return null;
+        }
 	}
 
 	private void checkLines(String[] lines) throws TelepayParserException {

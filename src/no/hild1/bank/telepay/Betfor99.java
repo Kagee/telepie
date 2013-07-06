@@ -1,7 +1,7 @@
 package no.hild1.bank.telepay;
 
-public class Betfor01 extends Betfor {
-    public Betfor01(BetforHeader header, String stringRecord) {
+public class Betfor99 extends Betfor {
+    public Betfor99(BetforHeader header, String stringRecord) {
         super(header, stringRecord);
     }
 

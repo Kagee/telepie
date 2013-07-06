@@ -18,16 +18,14 @@ import org.apache.commons.logging.LogFactory;
 
 public class TelepayGUI extends JFrame {
     private static Log log = LogFactory.getLog(TelepayGUI.class);
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5121434288061327051L;
 	private JEditorPane htmlPane;
     private JEditorPane logPane;
-    JButton selectFile, closeButton;
+    JButton selectFile, closeButton, attemptParseButton;
     final JFileChooser fc = new JFileChooser();
     AL al = new AL();
     JFrame app;
+    TelepayParser telepayParser;
 
     /**
      * @throws IOException
@@ -35,20 +33,19 @@ public class TelepayGUI extends JFrame {
 	public TelepayGUI() throws IOException {
         logPane = new JEditorPane();
         htmlPane = new JEditorPane();
-
-
+        fc.setCurrentDirectory(new File("./Telepay/OK"));
 
         app = this;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		htmlPane.setText("Foo");
         JScrollPane scrollPane = new JScrollPane(logPane);
 		JScrollPane scrollPane2 = new JScrollPane(htmlPane);
-
+ /*
         MessageConsole mc = new MessageConsole(logPane);
         mc.redirectOut();
         mc.redirectErr(Color.RED, null);
         mc.setMessageLines(100);
-
+   */
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         panel.add(scrollPane2);
@@ -67,7 +64,11 @@ public class TelepayGUI extends JFrame {
         panel.add(selectFile);
 
         panel.add(Box.createHorizontalGlue());
+        attemptParseButton = new JButton("Attempt to parse file");
+        attemptParseButton.addActionListener(al);
+        panel.add(attemptParseButton);
 
+        panel.add(Box.createHorizontalGlue());
 
         closeButton = new JButton("Close");
         closeButton.addActionListener(al);
@@ -92,11 +93,31 @@ public class TelepayGUI extends JFrame {
                     File file = fc.getSelectedFile();
                     //This is where a real application would open the file.
                     log.info("Opening: " + file.getName() + ".");
+                    telepayParser = null;
+                    try {
+                        telepayParser = new TelepayParser(file);
+                    } catch (Exception e1) {
+                        log.error(e1);
+                    }
                 } else {
                     log.warn("Open command cancelled by user.");
                 }
             } else if (e.getSource() == closeButton) {
                     app.dispose();
+            }  else if (e.getSource() == attemptParseButton) {
+                  if (telepayParser != null) {
+                      try {
+                          telepayParser.basicCheck();
+
+                      } catch (Exception e1) {
+                          log.error(e1);
+                      }
+                      try {
+                          telepayParser.parseAllRecords();
+                      } catch (TelepayParserException e1) {
+                          log.error(e1);
+                      }
+                  }
             }
         }
     }
