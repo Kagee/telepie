@@ -7,7 +7,7 @@ do
     FILEPATH="../src/no/hild1/bank/telepay/$FILE.java";
     ls -la "$FILEPATH";
     awk 'BEGIN { doPrint = 1; }
-    /\/\* makeBetforData.sh START \*\// { doPrint = 0; print $0; print system("cat tmp.java") 1>/dev/null }
+    /\/\* makeBetforData.sh START \*\// { doPrint = 0; print $0; system("cat tmp.java") }
     /\/\* makeBetforData.sh STOP \*\// { doPrint = 1; }
     { if (doPrint) print $0; }' "$FILEPATH" > "$FILEPATH".tmp;
     mv "$FILEPATH".tmp "$FILEPATH";
