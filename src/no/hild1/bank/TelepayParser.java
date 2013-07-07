@@ -1,18 +1,12 @@
 package no.hild1.bank;
 
 import no.hild1.bank.telepay.*;
-import no.hild1.bank.utils.Consts;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Matcher;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -46,8 +40,6 @@ public class TelepayParser {
 
 	public Betfor parseRecord(int recordNum) throws TelepayParserException {
         int startLine = (recordNum-1)*4;
-        String foo = "";
-        foo = foo.trim();
         String recordString = lines[startLine] + lines[startLine+1] + lines[startLine+2] + lines[startLine+3];
         if (recordString.length() != 320) {
             throw new TelepayParserException("Record #" + recordNum + " is a total of "
@@ -104,37 +96,7 @@ public class TelepayParser {
 						+ " characters long, should be 80. (missing padding?)");
 			}
 		}
-		log.info("All lines are 80 chars");
-	}
-
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		File dir = new File("Telepay/OK/");
-		// dir = new File("Telepay/ERROR/");
-		FileFilter fileFilter = new WildcardFileFilter("*.telepay");
-		File[] files = dir.listFiles(fileFilter);
-		Arrays.sort(files);
-		// for (File child : files) {
-		// System.out.println(child.getCanonicalPath());
-		// }
-		// ERROR: 0 utf8, 1 utf8, 2 tom fil,3 feil i dato,4,feil i lengde
-		// OK:
-		File f = files[0];
-		try {
-			log.info("Starting work on " + f.getPath());
-			TelepayParser tp = new TelepayParser(f);
-//			if (tp.parseAllRecords()) {
-//				log.info("Parsed ok");
-//			} else {
-//				log.info("Parse failed");
-//			}
-		} catch (TelepayParserException e) {
-			log.error("Failed to parse " + f.getPath());
-			e.printStackTrace();
-		}
+		log.debug("All lines are 80 chars");
 	}
 
 	/**
