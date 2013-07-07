@@ -1,0 +1,11 @@
+48 (actually 40)
+AHID                2   F   AH
+AHVERSION           1   F   2
+AHRETURNCODE        2   
+AHPROCEDUREID       4
+AHTRANSACTIONDATE   4
+AHSEQNO             6
+AHTRANSCODE         8
+AHUSERID            11
+AHNOOF80CHAR        2   F   04
+TRANSACTIONCODE     8   Not actually in Header, but we include it for simplicity 
