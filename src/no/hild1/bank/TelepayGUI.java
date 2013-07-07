@@ -2,26 +2,19 @@ package no.hild1.bank;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
-
 import javax.swing.*;
 
-import no.hild1.bank.utils.MessageConsole;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
+import no.hild1.bank.telepay.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class TelepayGUI extends JFrame {
     private static Log log = LogFactory.getLog(TelepayGUI.class);
-	private static final long serialVersionUID = -5121434288061327051L;
 	private JEditorPane htmlPane;
     private JEditorPane logPane;
-    JButton selectFile, closeButton, attemptParseButton;
+    JButton selectFile, closeButton, attemptParseButton, displayGUIButton;
     final JFileChooser fc = new JFileChooser();
     AL al = new AL();
     JFrame app;
@@ -40,12 +33,12 @@ public class TelepayGUI extends JFrame {
 		htmlPane.setText("Foo");
         JScrollPane scrollPane = new JScrollPane(logPane);
 		JScrollPane scrollPane2 = new JScrollPane(htmlPane);
- /*
+       /*
         MessageConsole mc = new MessageConsole(logPane);
         mc.redirectOut();
         mc.redirectErr(Color.RED, null);
         mc.setMessageLines(100);
-   */
+         */
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         panel.add(scrollPane2);
@@ -65,8 +58,15 @@ public class TelepayGUI extends JFrame {
 
         panel.add(Box.createHorizontalGlue());
         attemptParseButton = new JButton("Attempt to parse file");
+        attemptParseButton.setEnabled(false);
         attemptParseButton.addActionListener(al);
         panel.add(attemptParseButton);
+
+        panel.add(Box.createHorizontalGlue());
+        displayGUIButton = new JButton("Show GUI version of file");
+        displayGUIButton.setEnabled(false);
+        displayGUIButton.addActionListener(al);
+        panel.add(displayGUIButton);
 
         panel.add(Box.createHorizontalGlue());
 
@@ -82,25 +82,29 @@ public class TelepayGUI extends JFrame {
         int height = screenSize.height * 5 / 10;
         setBounds(width/8, height/8, width, height);
     }
+    public void displayError(String msg) {
+        log.error(msg);
+        JTextArea textArea = new JTextArea(msg);
+        textArea.setColumns(50);
+        textArea.setLineWrap( true );
+        textArea.setWrapStyleWord( true );
+        textArea.setSize(textArea.getPreferredSize().width, 1);
+        JOptionPane.showMessageDialog(
+                app, textArea, "Error found", JOptionPane.ERROR_MESSAGE);
+    }
     class AL implements java.awt.event.ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            //Handle open button action.
             if (e.getSource() == selectFile) {
                 int returnVal = fc.showOpenDialog(TelepayGUI.this);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    //This is where a real application would open the file.
-                    log.info("Opening: " + file.getName() + ".");
-                    telepayParser = null;
-                    try {
-                        telepayParser = new TelepayParser(file);
-                    } catch (Exception e1) {
-                        log.error(e1);
-                    }
+                    log.debug("Opening: " + file.getName() + ".");
+                    telepayParser = new TelepayParser(file);
+                    attemptParseButton.setEnabled(true);
                 } else {
-                    log.warn("Open command cancelled by user.");
+                    log.debug("Open command cancelled by user.");
                 }
             } else if (e.getSource() == closeButton) {
                     app.dispose();
@@ -108,16 +112,41 @@ public class TelepayGUI extends JFrame {
                   if (telepayParser != null) {
                       try {
                           telepayParser.basicCheck();
-
-                      } catch (Exception e1) {
-                          log.error(e1);
-                      }
-                      try {
                           telepayParser.parseAllRecords();
+                          displayGUIButton.setEnabled(true);
                       } catch (TelepayParserException e1) {
-                          log.error(e1);
+                          displayGUIButton.setEnabled(false);
+                          displayError(e1.toString());
                       }
                   }
+            } else if (e.getSource() == displayGUIButton) {
+                if (telepayParser != null) {
+                    for (Betfor record : telepayParser.records) {
+                        if (record instanceof Betfor00) {
+                            Betfor00 tmp = ((Betfor00)record);
+                            log.info("PRODUCTIONDATE: " + tmp.get(Betfor00.Element.PRODUCTIONDATE));
+                            tmp = null;
+                        } else if (record instanceof Betfor21) {
+                            Betfor21 tmp = ((Betfor21)record);
+                            log.info("PAYEESNAME: " + tmp.get(Betfor21.Element.PAYEESNAME));
+                            tmp = null;
+                        } else if (record instanceof Betfor22) {
+                            Betfor22 tmp = ((Betfor22)record);
+                            log.info("PAYEESNAME: " + tmp.get(Betfor22.Element.PAYEESNAME));
+                            tmp = null;
+                        }else if (record instanceof Betfor23) {
+                            Betfor23 tmp = ((Betfor23)record);
+                            log.info("KID: " + tmp.get(Betfor23.Element.KID));
+                            tmp = null;
+                        } else if (record instanceof Betfor99) {
+                            Betfor99 tmp = ((Betfor99)record);
+                            log.info("NUMBEROFRECORDS: " + tmp.get(Betfor99.Element.NUMBEROFRECORDS));
+                            tmp = null;
+                        } else {
+                            displayError("Code to disply record of type " + record.getClass() +" missing");
+                        }
+                    }
+                }
             }
         }
     }
