@@ -16,7 +16,16 @@ public class Betfor99 extends Betfor {
 
         log.info(this.betforRegexp);
         if (m.matches()) {
-            log.info("Found Betfor21");
+            if (Integer.parseInt(get(Element.NUMBEROFRECORDS)) != header.getRecordNum()) {
+                throw new TelepayParserException("Record #" + header.getRecordNum()
+                        + ", a BETFOR99 stated that we should have "
+                        + Integer.parseInt(get(Element.NUMBEROFRECORDS))
+                        + " records. We have found "
+                        + header.getRecordNum());
+            } else {
+                log.debug("Parsed " + header.getRecordNum() + " records (objects and BETFOR99 agrees)");
+
+            }
         } else {
             throw new TelepayParserException(header.getRecordNum(), "Did not QWERGQWETHWETmatch BETFOR21");
         }
