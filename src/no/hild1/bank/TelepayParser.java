@@ -15,21 +15,25 @@ public class TelepayParser {
 	private static Log log = LogFactory.getLog(TelepayParser.class);
 	String[] lines;
     int numRecords = 0;
-    ArrayList<Betfor> records = new ArrayList<Betfor>();
+    public ArrayList<Betfor> records = new ArrayList<Betfor>();
     File file;
-	public TelepayParser(File file) throws TelepayParserException, IOException {
+	public TelepayParser(File file) {
         this.file = file;
 	}
-    public void basicCheck() throws TelepayParserException, IOException {
-        checkEncoding(file);
-        String source = FileUtils.readFileToString(file, "ISO_8859_1");
-        lines = source.split("\n");
-        if (lines.length % 4 != 0) {
-            throw new TelepayParserException(
-                    "Lines in file is not a multiple of 4");
+    public void basicCheck() throws TelepayParserException {
+        try {
+            checkEncoding(file);
+            String source = FileUtils.readFileToString(file, "ISO_8859_1");
+            lines = source.split("\n");
+            if (lines.length % 4 != 0) {
+                throw new TelepayParserException(
+                        "Lines in file is not a multiple of 4");
+            }
+            numRecords = lines.length/4;
+            checkLines(lines);
+        }   catch (IOException ioe) {
+            throw new TelepayParserException(ioe);
         }
-        numRecords = lines.length/4;
-        checkLines(lines);
     }
 	public void parseAllRecords() throws TelepayParserException {
 		for (int i = 1; i <= (lines.length / 4); i++) {
@@ -47,13 +51,16 @@ public class TelepayParser {
                     + " characters long, should be 320.");
         }
         BetforHeader header = new BetforHeader(recordString, recordNum);
-        log.info("Probably BETFOR" + header.getBetforType());
+
+        log.debug("Probably BETFOR" + header.getBetforType());
+        log.debug("Length: " + recordString.length());
+
         Betfor record;
-        log.info("Length: " + recordString.length());
         String parsed = "";
         switch (header.getBetforType()) {
             case 0:
                 record = new Betfor00(header, recordString);
+                log.info("CLASS: "+record.getClass());
                 for (Betfor00.Element elem : Betfor00.Element.values()) {
                     parsed += elem + ": '" + ((Betfor00) record).get(elem) + "'\n";
                 }
@@ -81,8 +88,7 @@ public class TelepayParser {
                 log.info(parsed);
                 return record;
             default:
-                log.error("Unknown BETFOR type " + header.getBetforType());
-                return null;
+                throw new TelepayParserException("Unknown BETFOR type " + header.getBetforType());
         }
 	}
 
@@ -126,7 +132,7 @@ public class TelepayParser {
 		detector.dataEnd();
 		String encoding = detector.getDetectedCharset();
 		detector.reset();
-		log.info("Detected encoding: " + (encoding == null ? "none" : encoding));
+		log.debug("Detected encoding: " + (encoding == null ? "none" : encoding));
 		if (!("WINDOWS-1252".equals(encoding) || encoding == null)) {
 			throw new TelepayParserException(file.getPath() + " is encoded in "
 					+ encoding + ", should be ISO-8859-1/WINDOWS-1252");
