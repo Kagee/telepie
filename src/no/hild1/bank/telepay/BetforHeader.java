@@ -29,6 +29,9 @@ public class BetforHeader {
     public int getBetforType() {
         return betforType;
     }
+    public String getBetforTypeString() {
+        return String.format("%02d", getBetforType());
+    }
 
     public int getRecordNum() {
         return recordNum;
