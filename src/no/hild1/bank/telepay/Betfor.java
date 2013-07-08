@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class Betfor {
-	BetforHeader header;
+	public BetforHeader header;
     String  stringRecord;
     private static Log log = LogFactory.getLog(Betfor.class);
 

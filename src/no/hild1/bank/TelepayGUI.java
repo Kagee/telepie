@@ -94,14 +94,15 @@ public class TelepayGUI extends JFrame {
         panel.add(viewAllRecordsButton);
 
         panel.add(Box.createHorizontalGlue());
+        doubleCheck = new JButton("Doublecheck");
+        doubleCheck.setEnabled(false);
+        doubleCheck.addActionListener(al);
+        panel.add(doubleCheck);
+
+        panel.add(Box.createHorizontalGlue());
         copyLog = new JButton("Copy log");
         copyLog.addActionListener(al);
         panel.add(copyLog);
-
-        panel.add(Box.createHorizontalGlue());
-        doubleCheck = new JButton("Doublecheck");
-        doubleCheck.addActionListener(al);
-        panel.add(doubleCheck);
 
         panel.add(Box.createHorizontalGlue());
         closeButton = new JButton("Close");
@@ -126,6 +127,16 @@ public class TelepayGUI extends JFrame {
         JOptionPane.showMessageDialog(
                 app, textArea, "Error found", JOptionPane.ERROR_MESSAGE);
     }
+    public void displayMessage(String msg) {
+        log.info(msg);
+        JTextArea textArea = new JTextArea(msg);
+        textArea.setColumns(50);
+        textArea.setLineWrap( true );
+        textArea.setWrapStyleWord( true );
+        textArea.setSize(textArea.getPreferredSize().width, 1);
+        JOptionPane.showMessageDialog(
+                app, textArea, "Message", JOptionPane.INFORMATION_MESSAGE);
+    }
     class AL implements java.awt.event.ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -137,9 +148,10 @@ public class TelepayGUI extends JFrame {
                     log.debug("Opening: " + file.getName() + ".");
                     telepayParser = new TelepayParser(file);
                     attemptParseButton.setEnabled(true);
-                } else {
-                    attemptParseButton.setEnabled(false);
                     viewAllRecordsButton.setEnabled(false);
+                    doubleCheck.setEnabled(false);
+                } else {
+
                     log.debug("Open command cancelled by user.");
                 }
             } else if (e.getSource() == closeButton) {
@@ -158,7 +170,7 @@ public class TelepayGUI extends JFrame {
                           //  //dropdown.add(telepayParser.records.get(i));
                           //}
                         viewAllRecordsButton.setEnabled(true);
-
+                        doubleCheck.setEnabled(true);
                       } catch (TelepayParserException e1) {
                           //displayGUIButton.setEnabled(false);
                           displayError(e1.toString());
@@ -201,6 +213,7 @@ public class TelepayGUI extends JFrame {
                 logPane.copy();
             } else if (e.getSource() == doubleCheck) {
                 Set<String> acckid = new HashSet<String>();
+                boolean foundDouble = false;
                 for (Betfor record: telepayParser.records) {
 
                     if (record instanceof Betfor23){
@@ -218,12 +231,16 @@ public class TelepayGUI extends JFrame {
                         }
 
                         if (acckid.contains(key)) {
-                            displayError("Found key more than once:" + key);
+                            displayError("Found key "+ key + " a second time in record #" + record.header.getRecordNum());
+                            foundDouble = true;
                         } else {
                             log.info("Adding " + key);
                             acckid.add(key);
                         }
                     }
+                }
+                if (!foundDouble) {
+                    displayMessage("Found no kid-accountnumber og accountnumber-amount pairs");
                 }
 
             }
