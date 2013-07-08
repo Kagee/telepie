@@ -1,6 +1,5 @@
 BEGIN { 
-    ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; RECORD=1; COUNT=0; 
-
+    ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; COUNT=0; 
 }
 function regExpLine(name, len, type, static) { 
     if (type != "S") {
@@ -16,13 +15,14 @@ function regExpStartLine(name, len, type, static) {
         return "\"^(?<\"+ Element." name ".name() + \">" static ")\"";    
     }
 }
-
+# $1 is name
+# $2 is length
+# $3 is type (S=Static, N=Numeric, A=Alpha, X=Ignore/Unknow)
+# $4 is Value for static, regexp for Numeric/Alpha
 { 
-    if (RECORD == 1) {
-        RECORD = 2;
+    if (NR == 1) {
         CHECKTOTAL=$1;
-    } else if (RECORD == 2) {
-        RECORD = 3;
+    } else if (NR == 2) {
         ENUM = ENUM $1;
         REGEXP = regExpStartLine($1, $2, $3, $4)
     } else {
