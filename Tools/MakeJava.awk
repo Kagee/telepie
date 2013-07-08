@@ -1,4 +1,22 @@
-BEGIN { ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; RECORD=1; COUNT=0; }
+BEGIN { 
+    ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; RECORD=1; COUNT=0; 
+
+}
+function regExpLine(name, len, type, static) { 
+    if (type != "S") {
+        return "\n\t\t+ \"(?<\"+ Element." name ".name() + \">.{" len "})\""; 
+    } else {
+        return "\n\t\t+ \"(?<\"+ Element." name ".name() + \">" static ")\"";
+    }
+}
+function regExpStartLine(name, len, type, static) { 
+    if (type != "S") {
+        return "\"^(?<\"+ Element." name ".name() + \">.{" len "})\""; 
+    } else {
+        return "\"^(?<\"+ Element." name ".name() + \">" static ")\"";    
+    }
+}
+
 { 
     if (RECORD == 1) {
         RECORD = 2;
@@ -6,7 +24,7 @@ BEGIN { ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; RECORD=1; COUN
     } else if (RECORD == 2) {
         RECORD = 3;
         ENUM = ENUM $1;
-        REGEXP = "\"^(?<\"+ Element." $1 ".name() + \">.{" $2 "})\"";
+        REGEXP = regExpStartLine($1, $2, $3, $4)
     } else {
         COUNT = COUNT + 1;
         ENUM = ENUM ", ";
@@ -14,7 +32,7 @@ BEGIN { ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; RECORD=1; COUN
             ENUM = ENUM "\n\t\t";
             COUNT=0;
         }
-        REGEXP = REGEXP "\n\t\t+ \"(?<\"+ Element." $1 ".name() + \">.{" $2 "})\"";
+        REGEXP = REGEXP regExpLine($1, $2, $3, $4);
         ENUM = ENUM $1;
     }
     REGEXP = REGEXP "";
