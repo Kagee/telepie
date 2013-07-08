@@ -1,11 +1,11 @@
 48 (actually 40)
-AHID                2   F   AH
-AHVERSION           1   F   2
-AHRETURNCODE        2   
-AHPROCEDUREID       4
-AHTRANSACTIONDATE   4
-AHSEQNO             6
-AHTRANSCODE         8
-AHUSERID            11
-AHNOOF80CHAR        2   F   04
-TRANSACTIONCODE     8   Not actually in Header, but we include it for simplicity 
+AHID                2   S   AH
+AHVERSION           1   S   2
+AHRETURNCODE        2   X
+AHPROCEDUREID       4   X
+AHTRANSACTIONDATE   4   X
+AHSEQNO             6   X
+AHTRANSCODE         8   X
+AHUSERID            11  X
+AHNOOF80CHAR        2   S   04
+TRANSACTIONCODE     8   S   BETFOR.. # Not actually in header

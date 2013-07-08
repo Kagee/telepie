@@ -22,7 +22,7 @@ public class Betfor23 extends Betfor {
 
         log.info(this.betforRegexp);
         if (m.matches()) {
-            log.info("Found Betfor21");
+            log.info("Found Betfor23");
         } else {
             throw new TelepayParserException(header.getRecordNum(),
                     "Tried to parse BETFOR21, but regexp match failed (HOW ?_?)");
