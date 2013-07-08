@@ -4,6 +4,8 @@ import no.hild1.bank.telepay.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
@@ -24,7 +26,14 @@ public class TelepayParser {
         try {
             checkEncoding(file);
             String source = FileUtils.readFileToString(file, "ISO_8859_1");
+
+            // Remove those pesky, windows newlines.
+            source=source.replaceAll("\r","\n");
+            // and remove doubles.
+            source=source.replaceAll("\n\n", "\n");
+
             lines = source.split("\n");
+
             if (lines.length % 4 != 0) {
                 throw new TelepayParserException(
                         "Lines in file is not a multiple of 4");
@@ -96,10 +105,13 @@ public class TelepayParser {
 		for (int i = 0; i < lines.length; i++) {
 			String tmp = lines[i];
 			if (tmp.length() != 80) {
-				System.out.println(tmp);
+                log.info("Data in string is as follows: \n"
+                        + String.format("%040x",
+                        new BigInteger(tmp.getBytes(Charset.forName("ISO-8859-1"))))
+                        + "\n>" + tmp + "<");
 				throw new TelepayParserException("Line " + (i + 1) + " is "
 						+ tmp.length()
-						+ " characters long, should be 80. (missing padding?)");
+						+ " characters long, should be 80. See log for data in line.");
 			}
 		}
 		log.debug("All lines are 80 chars");
