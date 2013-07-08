@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 import javax.swing.*;
 
 import no.hild1.bank.telepay.*;
@@ -16,6 +17,7 @@ public class TelepayGUI extends JFrame {
 	private JEditorPane htmlPane;
     private JEditorPane logPane;
     JButton selectFile, closeButton, attemptParseButton, displayGUIButton, viewRecordButton, viewAllRecordsButton, copyLog;
+    JButton doubleCheck;
     JComboBox dropdown;
     final JFileChooser fc = new JFileChooser();
     AL al = new AL();
@@ -92,9 +94,14 @@ public class TelepayGUI extends JFrame {
         panel.add(viewAllRecordsButton);
 
         panel.add(Box.createHorizontalGlue());
-        copyLog = new JButton("Kopier log");
+        copyLog = new JButton("Copy log");
         copyLog.addActionListener(al);
         panel.add(copyLog);
+
+        panel.add(Box.createHorizontalGlue());
+        doubleCheck = new JButton("Doublecheck");
+        doubleCheck.addActionListener(al);
+        panel.add(doubleCheck);
 
         panel.add(Box.createHorizontalGlue());
         closeButton = new JButton("Close");
@@ -192,6 +199,33 @@ public class TelepayGUI extends JFrame {
             } else if (e.getSource() == copyLog) {
                 logPane.selectAll();
                 logPane.copy();
+            } else if (e.getSource() == doubleCheck) {
+                Set<String> acckid = new HashSet<String>();
+                for (Betfor record: telepayParser.records) {
+
+                    if (record instanceof Betfor23){
+                        String KID = ((Betfor23)record).get(Betfor23.Element.KID);
+                        String ACCOUNTNUMBER = ((Betfor23)record).get(Betfor23.Element.ACCOUNTNUMBER);
+                        String INVOICEAMOUNT = ((Betfor23)record).get(Betfor23.Element.INVOICEAMOUNT);
+                        String pattern = "^[ ]{27}$";
+                        String key;
+                        if (KID.matches(pattern)) {
+                            log.info("NOT KID");
+                            key =  "ACC+AMOUNT:" + ACCOUNTNUMBER + ":"+ INVOICEAMOUNT;
+                        } else {
+                            log.info("KID");
+                            key = "ACC+KID:" + ACCOUNTNUMBER +":"+ KID;
+                        }
+
+                        if (acckid.contains(key)) {
+                            displayError("Found key more than once:" + key);
+                        } else {
+                            log.info("Adding " + key);
+                            acckid.add(key);
+                        }
+                    }
+                }
+
             }
         }
     }
