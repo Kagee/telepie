@@ -35,9 +35,9 @@ public class TelepayParser {
             lines = source.split("\n");
 
             if (lines.length % 4 != 0) {
-                throw new TelepayParserException(
-                        "Lines in file is not a multiple of 4");
+                log.warn("Lines in file is not a multiple of 4");
             }
+
             numRecords = lines.length/4;
             checkLines(lines);
         }   catch (IOException ioe) {
