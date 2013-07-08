@@ -9,7 +9,7 @@ public class TelepayParserException extends Exception {
 		super(message);
 	}
 	public TelepayParserException(int record, String message) {
-		super("Record " + record + ": " + message);
+		super("Record " + record + "(linje "+ record * 4 + "): " + message);
 	}
 	public TelepayParserException(String message, Throwable cause) {
 		super(message, cause);
