@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import no.hild1.bank.telepay.*;
+import no.hild1.bank.utils.MessageConsole;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -14,7 +15,8 @@ public class TelepayGUI extends JFrame {
     private static Log log = LogFactory.getLog(TelepayGUI.class);
 	private JEditorPane htmlPane;
     private JEditorPane logPane;
-    JButton selectFile, closeButton, attemptParseButton, displayGUIButton;
+    JButton selectFile, closeButton, attemptParseButton, displayGUIButton, viewRecordButton, viewAllRecordsButton, copyLog;
+    JComboBox dropdown;
     final JFileChooser fc = new JFileChooser();
     AL al = new AL();
     JFrame app;
@@ -23,31 +25,34 @@ public class TelepayGUI extends JFrame {
     /**
      * @throws IOException
      */
-	public TelepayGUI() throws IOException {
+	public TelepayGUI() {
+        super("Telepay 2v1 Viewer");
         logPane = new JEditorPane();
-        htmlPane = new JEditorPane();
+        //htmlPane = new JEditorPane();
         fc.setCurrentDirectory(new File("./Telepay/OK"));
 
         app = this;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		htmlPane.setText("Foo");
+		//htmlPane.setText("Foo");
         JScrollPane scrollPane = new JScrollPane(logPane);
-		JScrollPane scrollPane2 = new JScrollPane(htmlPane);
-       /*
+		//JScrollPane scrollPane2 = new JScrollPane(htmlPane);
+
         MessageConsole mc = new MessageConsole(logPane);
         mc.redirectOut();
         mc.redirectErr(Color.RED, null);
-        mc.setMessageLines(100);
-         */
+        //mc.setMessageLines(100);
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.add(scrollPane2);
+        //panel.add(scrollPane2);
         panel.add(scrollPane);
         getContentPane().add(panel, BorderLayout.CENTER);
         getContentPane().add(makeButtonPanel(), BorderLayout.SOUTH);
         setSize();
 	    setVisible(true);
 	}
+
+
     public JPanel makeButtonPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
@@ -61,15 +66,37 @@ public class TelepayGUI extends JFrame {
         attemptParseButton.setEnabled(false);
         attemptParseButton.addActionListener(al);
         panel.add(attemptParseButton);
-
+      /*
         panel.add(Box.createHorizontalGlue());
         displayGUIButton = new JButton("Show GUI version of file");
         displayGUIButton.setEnabled(false);
         displayGUIButton.addActionListener(al);
         panel.add(displayGUIButton);
 
+
         panel.add(Box.createHorizontalGlue());
 
+        dropdown = new JComboBox();
+        dropdown.addItem("Please parse file first");
+        panel.add(dropdown);
+
+        viewRecordButton = new JButton("View single record");
+        viewRecordButton.setEnabled(true);
+        viewRecordButton.addActionListener(al);
+        panel.add(viewRecordButton);
+     */
+        panel.add(Box.createHorizontalGlue());
+        viewAllRecordsButton = new JButton("View all records");
+        viewAllRecordsButton.setEnabled(false);
+        viewAllRecordsButton.addActionListener(al);
+        panel.add(viewAllRecordsButton);
+
+        panel.add(Box.createHorizontalGlue());
+        copyLog = new JButton("Kopier log");
+        copyLog.addActionListener(al);
+        panel.add(copyLog);
+
+        panel.add(Box.createHorizontalGlue());
         closeButton = new JButton("Close");
         closeButton.addActionListener(al);
         panel.add(closeButton);
@@ -104,6 +131,8 @@ public class TelepayGUI extends JFrame {
                     telepayParser = new TelepayParser(file);
                     attemptParseButton.setEnabled(true);
                 } else {
+                    attemptParseButton.setEnabled(false);
+                    viewAllRecordsButton.setEnabled(false);
                     log.debug("Open command cancelled by user.");
                 }
             } else if (e.getSource() == closeButton) {
@@ -113,9 +142,18 @@ public class TelepayGUI extends JFrame {
                       try {
                           telepayParser.basicCheck();
                           telepayParser.parseAllRecords();
-                          displayGUIButton.setEnabled(true);
+                          //displayGUIButton.setEnabled(true);
+                          //dropdown = new JComboBox();
+                          //dropdown.removeAllItems();
+                          //log.info("# of records: " + telepayParser.records.size());
+                          //for (int i = 0; i < telepayParser.records.size(); i++) {
+                          //  dropdown.addItem(telepayParser.records.get(i));
+                          //  //dropdown.add(telepayParser.records.get(i));
+                          //}
+                        viewAllRecordsButton.setEnabled(true);
+
                       } catch (TelepayParserException e1) {
-                          displayGUIButton.setEnabled(false);
+                          //displayGUIButton.setEnabled(false);
                           displayError(e1.toString());
                       }
                   }
@@ -147,12 +185,26 @@ public class TelepayGUI extends JFrame {
                         }
                     }
                 }
+            } else if (e.getSource() == viewRecordButton) {
+                ((Betfor) dropdown.getSelectedItem()).displayBetfor();
+            } else if (e.getSource() == viewAllRecordsButton)  {
+                new DisplayRecords(telepayParser.records,fc.getSelectedFile().getName());
+            } else if (e.getSource() == copyLog) {
+                logPane.selectAll();
+                logPane.copy();
             }
         }
     }
 
 	public static void main(String[] args) throws IOException {
-		new TelepayGUI();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                new TelepayGUI();
+            }
+        });
+
 	}
 
 }
