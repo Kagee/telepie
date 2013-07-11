@@ -18,14 +18,18 @@ public class TelepayParser {
 	String[] lines;
     int numRecords = 0;
     public ArrayList<Betfor> records = new ArrayList<Betfor>();
-    File file;
+    File sourceFile;
+
 	public TelepayParser(File file) {
-        this.file = file;
+        this.sourceFile = file;
 	}
+    public String getFileName() {
+        return sourceFile.getName();
+    }
     public void basicCheck() throws TelepayParserException {
         try {
-            checkEncoding(file);
-            String source = FileUtils.readFileToString(file, "ISO_8859_1");
+            checkEncoding(sourceFile);
+            String source = FileUtils.readFileToString(sourceFile, "ISO_8859_1");
 
             // Remove those pesky, windows newlines.
             source=source.replaceAll("\r","\n");
