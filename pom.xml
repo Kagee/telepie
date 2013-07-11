@@ -6,7 +6,7 @@
 
   <groupId>no.hild1.bank</groupId>
   <artifactId>glowing-batman</artifactId>
-  <version>0.3</version>
+  <version>0.4</version>
   <dependencies>
   	<dependency>
   		<groupId>org.apache.commons</groupId>

@@ -82,6 +82,13 @@ public class TelepayParser {
                 }
                 log.info(parsed);
                 return record;
+            case 22:
+                record = new Betfor22(header, recordString);
+                for (Betfor22.Element elem : Betfor22.Element.values()) {
+                    parsed += elem + ": '" + ((Betfor22) record).get(elem) + "'\n";
+                }
+                log.info(parsed);
+                return record;
             case 23:
                 record = new Betfor23(header, recordString);
                 for (Betfor23.Element elem : Betfor23.Element.values()) {
