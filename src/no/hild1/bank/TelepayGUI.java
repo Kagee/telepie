@@ -27,7 +27,7 @@ public class TelepayGUI extends JFrame {
         application = this;
 
         logPane = new JEditorPane();
-        fc.setCurrentDirectory(new File("./Telepay/OK"));
+        fc.setCurrentDirectory(new File(System.getProperty("user.home")));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JScrollPane scrollPane = new JScrollPane(logPane);
@@ -70,12 +70,12 @@ public class TelepayGUI extends JFrame {
         panel.add(doubleCheck);
 
         panel.add(Box.createHorizontalGlue());
-        copyLog = new JButton("Copy log");
+        copyLog = new JButton("Kopier logg");
         copyLog.addActionListener(localActionListener);
         panel.add(copyLog);
 
         panel.add(Box.createHorizontalGlue());
-        closeButton = new JButton("Close");
+        closeButton = new JButton("Lukk");
         closeButton.addActionListener(localActionListener);
         panel.add(closeButton);
 
