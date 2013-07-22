@@ -4,10 +4,10 @@ import no.hild1.bank.TelepayParserException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.regex.Matcher;
+import java.awt.*;
 import java.util.regex.Pattern;
 
-public class BetforHeader {
+public class BetforHeader extends Betfor{
 
     private int betforType;
     private int recordNum;
@@ -37,8 +37,13 @@ public class BetforHeader {
         return recordNum;
     }
 
-    public String get(Element e) {
-        return m.group(e.name());
+    public int getRecordStartLine() {
+        return recordNum*4;
+    }
+
+    @Override
+    public Color getColor(ElementInterface e) {
+        return null;
     }
 
     /* makeBetforData.sh START */
@@ -55,12 +60,12 @@ public class BetforHeader {
 		+ "(?<"+ Element.AHNOOF80CHAR.name() + ">04)"
 		+ "(?<"+ Element.TRANSACTIONCODE.name() + ">BETFOR..)";
 	public static Pattern betforPattern = Pattern.compile(betforRegexp);
-	Matcher m;
-	public enum Element {
+	public enum Element implements ElementInterface {
 		AHID, AHVERSION, AHRETURNCODE, 
 		AHPROCEDUREID, AHTRANSACTIONDATE, AHSEQNO, 
 		AHTRANSCODE, AHUSERID, AHNOOF80CHAR, 
 		TRANSACTIONCODE
 	}
+	public ElementInterface[] getElements() { return Element.values(); }
     /* makeBetforData.sh STOP */
 }

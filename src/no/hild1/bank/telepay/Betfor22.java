@@ -1,5 +1,6 @@
 package no.hild1.bank.telepay;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
@@ -21,9 +22,14 @@ public class Betfor22 extends Betfor {
 
         log.info(this.betforRegexp);
         if (m.matches()) {
-            log.info("Found Betfor21");
+            log.info("Record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") is a BETFOR22");
         } else {
-            throw new TelepayParserException(header.getRecordNum(), "Did not QWERGQWETHWETmatch BETFOR21");
+            String error = "Failed to parse record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") as a BETFOR22";
+            log.error(error);
+            throw new TelepayParserException(header.getRecordNum(),
+                    error);
         }
     }
 
@@ -62,6 +68,9 @@ public class Betfor22 extends Betfor {
         mainCPanel.setCollapsed(false);
         panel.add(mainCPanel);
         return panel;
+    @Override
+    public Color getColor(ElementInterface e) {
+        return null;
     }
 
     /* makeBetforData.sh START */
@@ -85,8 +94,7 @@ public class Betfor22 extends Betfor {
 		+ "(?<"+ Element.RESERVED2.name() + ">.{23})"
 		+ "$";
 	public static Pattern betforPattern = Pattern.compile(betforRegexp);
-	Matcher m;
-	public enum Element {
+	public enum Element implements ElementInterface {
 		APPLICATIONHEADER, TRANSACTIONCODE, ENTERPRISENUMBER, 
 		ACCOUNTNUMBER, SEQUENCECONTROL, REFERENCENUMBER, 
 		PAYEESACCOUNTNUMBER, PAYEESNAME, AMOUNT, 
@@ -94,5 +102,6 @@ public class Betfor22 extends Betfor {
 		OWNREFERENCE2, SERIALNUMBER, CANCELLATIONCAUSE, 
 		RESERVED2
 	}
+	public ElementInterface[] getElements() { return Element.values(); }
     /* makeBetforData.sh STOP */
 }

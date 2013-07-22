@@ -1,5 +1,6 @@
 package no.hild1.bank.telepay;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
@@ -14,7 +15,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Betfor23 extends Betfor {
-
+    private boolean isKIDPayment = false;
     public Betfor23(BetforHeader header, String stringRecord) throws TelepayParserException {
         super(header, stringRecord);
         log.info(this.stringRecord);
@@ -22,10 +23,15 @@ public class Betfor23 extends Betfor {
 
         log.info(this.betforRegexp);
         if (m.matches()) {
-            log.info("Found Betfor23");
+            log.info("Record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") is a BETFOR23");
+            isKIDPayment = get(Element.KID).matches("^[ ]{27}$");
         } else {
+            String error = "Failed to parse record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") as a BETFOR23";
+            log.error(error);
             throw new TelepayParserException(header.getRecordNum(),
-                    "Tried to parse BETFOR21, but regexp match failed (HOW ?_?)");
+                    error);
         }
     }
     JButton showHideButton;
@@ -60,8 +66,9 @@ public class Betfor23 extends Betfor {
         panel.add(mainCPanel);
         return panel;
     }
-    public String get(Element e) {
-        return m.group(((Element)e).name());
+
+    public boolean isKIDPayment() {
+        return isKIDPayment;
     }
 
     /* makeBetforData.sh START */

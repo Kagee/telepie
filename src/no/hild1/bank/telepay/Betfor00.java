@@ -8,6 +8,7 @@ import org.jdesktop.swingx.JXCollapsiblePane;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
@@ -21,10 +22,15 @@ public class Betfor00 extends Betfor {
         m = this.betforPattern.matcher(this.stringRecord);
 
         log.debug(this.betforRegexp);
-        if (m.matches() && header.getBetforType() == 0) {
-            log.debug("Found Betfor00");
+        if (m.matches()) {
+            log.info("Record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") is a BETFOR00");
         } else {
-            throw new TelepayParserException(header.getRecordNum(), "Regexp did not match Betfor00");
+            String error = "Failed to parse record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") as a BETFOR00";
+            log.error(error);
+            throw new TelepayParserException(header.getRecordNum(),
+                    error);
         }
     }
     JButton showHideButton;
@@ -87,8 +93,7 @@ public class Betfor00 extends Betfor {
 		+ "(?<"+ Element.RESERVED3.name() + ">.{9})"
 		+ "$";
 	public static Pattern betforPattern = Pattern.compile(betforRegexp);
-	Matcher m;
-	public enum Element {
+	public enum Element implements ElementInterface {
 		APPLICATIONHEADER, TRANSACTIONCODE, ENTERPRISENUMBER, 
 		DIVISION, SEQUENCECONTROL, RESERVED1, 
 		PRODUCTIONDATE, PASSWORD, VERSION, 
@@ -96,5 +101,6 @@ public class Betfor00 extends Betfor {
 		SIGILLSEALDATE, SIGILLPARTKEY, SIGILLSEALHOW, 
 		RESERVED2, OWNREFERENCEBATCH, RESERVED3
 	}
+	public ElementInterface[] getElements() { return Element.values(); }
     /* makeBetforData.sh STOP */
 }

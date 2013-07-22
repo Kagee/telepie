@@ -8,6 +8,7 @@ import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
@@ -22,9 +23,14 @@ public class Betfor21 extends Betfor {
 
         log.info(this.betforRegexp);
         if (m.matches()) {
-            log.info("Found Betfor21");
+            log.info("Record #" + header.getRecordNum()
+                    + " (staring at line " + (header.getRecordNum()*4) + ") is a BETFOR21");
         } else {
-            throw new TelepayParserException(header.getRecordNum(), "Did not QWERGQWETHWETmatch BETFOR21");
+            String error = "Klarte ikke lese record #" + header.getRecordNum()
+                    + " (som starter på line " + (header.getRecordNum()*4) + ") som en BETFOR21";
+            log.error(error);
+            throw new TelepayParserException(header.getRecordNum(),
+                    error);
         }
     }
 
@@ -42,6 +48,19 @@ public class Betfor21 extends Betfor {
             keyValue[0] = e.name();
             keyValue[1] = get(e);
             model.addRow(keyValue);
+    @Override
+    public Color getColor(ElementInterface e) {
+        switch (((Element)e)) {
+            case ACCOUNTNUMBER:
+                return Color.yellow;
+            case PAYEESNAME:
+            case ADDRESS1:
+            case ADDRESS2:
+            case POSTCODE:
+            case CITY:
+                return Color.green;
+            default:
+                return null;
         }
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setModel(model);
@@ -99,8 +118,7 @@ public class Betfor21 extends Betfor {
 		+ "(?<"+ Element.FORMNO.name() + ">.{10})"
 		+ "$";
 	public static Pattern betforPattern = Pattern.compile(betforRegexp);
-	Matcher m;
-	public enum Element {
+	public enum Element implements ElementInterface {
 		APPLICATIONHEADER, TRANSACTIONCODE, ENTERPRISENUMBER, 
 		ACCOUNTNUMBER, SEQUENCECONTROL, REFERENCENUMBER, 
 		PAYMENTDATE, OWNREFORDER, RESERVED, 
@@ -111,5 +129,8 @@ public class Betfor21 extends Betfor {
 		VALUEDATE, VALUEDATERECEIVINGBANK, CANCELLATIONCAUSE, 
 		RESERVED2, FORMNO
 	}
+	public ElementInterface[] getElements() { return Element.values(); }
     /* makeBetforData.sh STOP */
+
+
 }

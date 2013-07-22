@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-
+import no.hild1.bank.telepay.Betfor.ElementInterface;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,43 +73,27 @@ public class TelepayParser {
         switch (header.getBetforType()) {
             case 0:
                 record = new Betfor00(header, recordString);
-                log.info("CLASS: "+record.getClass());
-                for (Betfor00.Element elem : Betfor00.Element.values()) {
-                    parsed += elem + ": '" + ((Betfor00) record).get(elem) + "'\n";
-                }
-                log.info(parsed);
-                return record;
+                break;
             case 21:
                 record = new Betfor21(header, recordString);
-                for (Betfor21.Element elem : Betfor21.Element.values()) {
-                    parsed += elem + ": '" + ((Betfor21) record).get(elem) + "'\n";
-                }
-                log.info(parsed);
-                return record;
+                break;
             case 22:
                 record = new Betfor22(header, recordString);
-                for (Betfor22.Element elem : Betfor22.Element.values()) {
-                    parsed += elem + ": '" + ((Betfor22) record).get(elem) + "'\n";
-                }
-                log.info(parsed);
-                return record;
+                break;
             case 23:
                 record = new Betfor23(header, recordString);
-                for (Betfor23.Element elem : Betfor23.Element.values()) {
-                    parsed += elem + ": '" + ((Betfor23) record).get(elem) + "'\n";
-                }
-                log.info(parsed);
-                return record;
+                break;
             case 99:
                 record = new Betfor99(header, recordString);
-                for (Betfor99.Element elem : Betfor99.Element.values()) {
-                    parsed += elem + ": '" + ((Betfor99) record).get(elem) + "'\n";
-                }
-                log.info(parsed);
-                return record;
+                break;
             default:
                 throw new TelepayParserException("Unknown BETFOR type " + header.getBetforType());
         }
+        for (ElementInterface elem : record.getElements()) {
+            parsed += elem + ": '" + record.get(elem) + "'\n";
+        }
+        log.info(parsed);
+        return record;
 	}
 
 	private void checkLines(String[] lines) throws TelepayParserException {

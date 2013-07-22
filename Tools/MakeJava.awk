@@ -1,11 +1,14 @@
 BEGIN { 
-    ENUM="\tpublic enum Element {\n\t\t"; REGEXP=""; TOTAL=0; COUNT=0; 
+    ENUM="\tpublic enum Element implements ElementInterface {\n\t\t"; REGEXP=""; TOTAL=0; COUNT=0; 
+    PREREG = "\"+ Element.";
+    POSTREG = ".name() + \"";
 }
-function regExpLine(name, len, type, static) { 
+function regExpLine(name, len, type, static) {
+    RET = "\n\t\t+ \"(?<" PREREG name POSTREG ">" 
     if (type != "S") {
-        return "\n\t\t+ \"(?<\"+ Element." name ".name() + \">.{" len "})\""; 
+        return RET ".{" len "})\""; 
     } else {
-        return "\n\t\t+ \"(?<\"+ Element." name ".name() + \">" static ")\"";
+        return RET static ")\"";
     }
 }
 function regExpStartLine(name, len, type, static) { 
@@ -49,7 +52,8 @@ END {
             print "\tprivate static String betforRegexp = " REGEXP ";";
         }
         print "\tpublic static Pattern betforPattern = Pattern.compile(betforRegexp);"
-        print "\tMatcher m;\n" ENUM "\n\t}"; 
+        print ENUM 
+        print "\t}\n\tpublic ElementInterface[] getElements() { return Element.values(); }"; 
     } else {
             print "\t// Total length of elements in " FILENAME " is " TOTAL " not " CHECKTOTAL " as it should "
     }
