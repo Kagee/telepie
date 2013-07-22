@@ -33,41 +33,6 @@ public class Betfor22 extends Betfor {
         }
     }
 
-    public String get(Element e) {
-        return m.group(((Element)e).name());
-    }
-
-    JButton showHideButton;
-    JXCollapsiblePane mainCPanel;
-    public JPanel getPanel() {
-        JPanel panel = new JPanel();
-        JTable table = new JTable();
-        table.setEnabled(false);
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Key");
-        model.addColumn("Value");
-        String[] keyValue = new String[2];
-        for(Element e: Element.values()) {
-            keyValue[0] = e.name();
-            keyValue[1] = get(e);
-            model.addRow(keyValue);
-        }
-        table.setModel(model);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        showHideButton = new JButton("Record #" + header.getRecordNum() + ", BETFOR" + header.getBetforTypeString());
-        showHideButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                mainCPanel.setCollapsed(!mainCPanel.isCollapsed());
-            }
-        });
-        panel.add(showHideButton);
-        mainCPanel = new JXCollapsiblePane();
-        mainCPanel.setCollapsed(true);
-        mainCPanel.add(table);
-        mainCPanel.setCollapsed(false);
-        panel.add(mainCPanel);
-        return panel;
     @Override
     public Color getColor(ElementInterface e) {
         return null;

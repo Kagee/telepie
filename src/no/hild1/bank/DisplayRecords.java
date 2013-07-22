@@ -22,7 +22,8 @@ public class DisplayRecords  extends JDialog {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         for (Betfor record: records) {
-            mainPanel.add(record.getPanel());
+            //mainPanel.add(record.getPanel());
+            mainPanel.add(record.getColorPanel());
         }
         setModal(true);
         JScrollPane scrollpane = new JScrollPane(mainPanel);
