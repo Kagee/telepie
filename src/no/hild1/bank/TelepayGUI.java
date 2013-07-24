@@ -26,6 +26,8 @@ public class TelepayGUI extends JFrame {
     LocalActionListener localActionListener = new LocalActionListener();
     JFrame application;
     TelepayParser telepayParser;
+    JTabbedPane tpane;
+    JPanel recordsView;
 	public TelepayGUI() {
         super("Telepay 2v1 Viewer");
         application = this;
@@ -39,15 +41,19 @@ public class TelepayGUI extends JFrame {
         mc.redirectOut();
         mc.redirectErr(Color.RED, null);
         //mc.setMessageLines(100);
-
+        tpane = new JTabbedPane();
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 
-        panel.add(scrollPane);
-        getContentPane().add(panel, BorderLayout.CENTER);
+        tpane.add("Logg", scrollPane);
+
+        getContentPane().add(tpane, BorderLayout.CENTER);
+
         getContentPane().add(makeButtonPanel(), BorderLayout.SOUTH);
+
         javax.swing.border.TitledBorder dragBorder = new javax.swing.border.TitledBorder( "Slipp fil for å sette den som aktiv fil" );
-        new FileDrop( panel, dragBorder, true, new LocalFileDropListener());
+
+        new FileDrop( tpane, dragBorder, true, new LocalFileDropListener());
 
         setSize();
 	    setVisible(true);
@@ -74,6 +80,12 @@ public class TelepayGUI extends JFrame {
         panel.add(doubleCheck);
 
         panel.add(Box.createHorizontalGlue());
+        fakeFile = new JButton("Sjekk for doble betalinger");
+        fakeFile.setEnabled(false);
+        fakeFile.addActionListener(localActionListener);
+        panel.add(fakeFile);
+
+        panel.add(Box.createHorizontalGlue());
         copyLog = new JButton("Kopier logg");
         copyLog.addActionListener(localActionListener);
         panel.add(copyLog);
@@ -87,8 +99,9 @@ public class TelepayGUI extends JFrame {
     }
     public void setSize() {
         Dimension screenSize = getToolkit().getScreenSize();
-        int width = screenSize.width * 4 / 10;
-        int height = screenSize.height * 5 / 10;
+        //int width = screenSize.width * 4 / 10;
+        int width = 850;
+        int height = 500;
         logPane.setPreferredSize(new Dimension(width, height));
         pack();
     }
@@ -102,13 +115,13 @@ public class TelepayGUI extends JFrame {
         textArea.setWrapStyleWord( true );
         textArea.setSize(textArea.getPreferredSize().width, 1);
         JOptionPane.showMessageDialog(
-                application, textArea, "Alvorlig feil funnet", messagetype);
+                application, textArea, "Melding", messagetype);
     }
 
     private void resetApp() {
         telepayParser = null;
         viewAllRecordsButton.setEnabled(false);
-        viewAllRecordsButton.setEnabled(false);
+        fakeFile.setEnabled(false);
     }
 
     class LocalFileDropListener implements no.hild1.bank.utils.FileDrop.Listener {
@@ -127,12 +140,32 @@ public class TelepayGUI extends JFrame {
             try {
                 telepayParser.basicCheck();
                 telepayParser.parseAllRecords();
+             /*   for (Betfor b : telepayParser.records) {
+                    log.info("\n" + b.getRecord(false));
+                }
+               */
+                showRecords();
+                fakeFile.setEnabled(true);
                 viewAllRecordsButton.setEnabled(true);
                 doubleCheck.setEnabled(true);
             } catch (TelepayParserException e1) {
                 resetApp();
                 displayError(e1.toString());
             }
+    }
+    private void showRecords() {
+        if (recordsView != null) {
+            tpane.remove(recordsView);
+        }
+        recordsView = new DisplayRecords(telepayParser.records);
+        //JScrollPane scrollPanel = new JScrollPane();
+
+        tpane.add(recordsView, BorderLayout.CENTER, 0);
+
+        //scrollPanel.setViewportView(recordsView);
+
+        tpane.setTitleAt(0, "Records");
+        tpane.setSelectedComponent(recordsView);
     }
 
     class LocalActionListener implements java.awt.event.ActionListener {
@@ -152,7 +185,7 @@ public class TelepayGUI extends JFrame {
             } else if (e.getSource() == closeButton) {
                     application.dispose();
             } else if (e.getSource() == viewAllRecordsButton)  {
-                new DisplayRecords(telepayParser.records, telepayParser.getFileName());
+                showRecords();
             } else if (e.getSource() == copyLog) {
                 logPane.selectAll();
                 logPane.copy();
