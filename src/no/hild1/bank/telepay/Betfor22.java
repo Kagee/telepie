@@ -35,7 +35,18 @@ public class Betfor22 extends Betfor {
 
     @Override
     public Color getColor(ElementInterface e) {
-        return null;
+        switch (((Element)e)) {
+            case ACCOUNTNUMBER:
+                return Color.YELLOW;
+            case PAYEESACCOUNTNUMBER:
+                return Color.PINK;
+            case AMOUNT:
+                return Color.GREEN;
+            case ENTERPRISENUMBER:
+                return Color.MAGENTA;
+            default:
+                return null;
+        }
     }
 
     /* makeBetforData.sh START */

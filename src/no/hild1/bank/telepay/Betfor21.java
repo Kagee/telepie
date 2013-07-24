@@ -38,13 +38,13 @@ public class Betfor21 extends Betfor {
     public Color getColor(ElementInterface e) {
         switch (((Element)e)) {
             case ACCOUNTNUMBER:
-                return Color.yellow;
-            case PAYEESNAME:
-            case ADDRESS1:
-            case ADDRESS2:
-            case POSTCODE:
-            case CITY:
-                return Color.green;
+                return Color.YELLOW;
+            case PAYEESACCOUNTNUMBER:
+                return Color.PINK;
+           case PAYMENTDATE:
+               return Color.BLUE;
+           case ENTERPRISENUMBER:
+               return Color.MAGENTA;
             default:
                 return null;
         }

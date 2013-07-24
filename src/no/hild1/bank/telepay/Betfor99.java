@@ -45,7 +45,12 @@ public class Betfor99 extends Betfor {
 
     @Override
     public Color getColor(ElementInterface e) {
-        return null;
+        switch (((Element)e)) {
+            case ENTERPRISENUMBER:
+                return Color.MAGENTA;
+            default:
+                return null;
+        }
     }
 
     /* makeBetforData.sh START */

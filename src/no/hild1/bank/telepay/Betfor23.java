@@ -37,7 +37,20 @@ public class Betfor23 extends Betfor {
 
     @Override
     public Color getColor(ElementInterface e) {
-        return null;
+        switch (((Element)e)) {
+            case ACCOUNTNUMBER:
+                return Color.YELLOW;
+            case ENTERPRISENUMBER:
+                return Color.MAGENTA;
+            case INVOICEAMOUNT:
+                return Color.GREEN;
+            case INVOICEDATE:
+                return Color.BLUE;
+            case KID:
+                return Color.CYAN;
+            default:
+                return null;
+        }
     }
 
     public boolean isKIDPayment() {
