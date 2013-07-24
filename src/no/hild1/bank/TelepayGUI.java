@@ -4,19 +4,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 
 import no.hild1.bank.telepay.*;
 import no.hild1.bank.utils.FileDrop;
 import no.hild1.bank.utils.MessageConsole;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class TelepayGUI extends JFrame {
     private static Log log = LogFactory.getLog(TelepayGUI.class);
     private JEditorPane logPane;
-    JButton selectFile, closeButton, viewAllRecordsButton, copyLog;
+    JButton selectFile, closeButton, viewAllRecordsButton, copyLog, fakeFile;
     JButton doubleCheck;
     final JFileChooser fc = new JFileChooser();
     LocalActionListener localActionListener = new LocalActionListener();
@@ -152,6 +156,70 @@ public class TelepayGUI extends JFrame {
             } else if (e.getSource() == copyLog) {
                 logPane.selectAll();
                 logPane.copy();
+            } else if (e.getSource() == fakeFile) {
+
+                DateFormat df = new SimpleDateFormat("yyyy-mm-dd-HH-mm");
+                Date today = Calendar.getInstance().getTime();
+                String reportDate = df.format(today);
+                String filename = telepayParser.sourceFile.getAbsolutePath() + "."+reportDate+".telepay";
+                if (JOptionPane.showConfirmDialog(
+                        application, "Den nye filen vil bli lagret som \n" + filename,
+                        "Filnavn", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {return; }
+
+                String orgNR = "";
+                boolean first = true;
+                do {
+                    orgNR = (String)JOptionPane.showInputDialog(
+                            application,
+                            "Tast inn nytt Org.Nr" + ((first) ? "" : "\nOrg.Nr må være 9 siffer"),
+                            "Tast inn nytt Org.Nr",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            null,
+                            "");
+                    if (orgNR == null) { return; }
+                    first = false;
+                } while (!orgNR.matches("[0-9]{9}"));
+
+                String konto = "";
+                first = true;
+                do {
+                    konto = (String)JOptionPane.showInputDialog(
+                            application,
+                            "Tast inn nytt kontonummer" + ((first) ? "" : "\nKontonummer må være 11 siffer"),
+                            "Tast inn nytt kontonummer",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            null,
+                            "");
+                    if (konto == null) { return; }
+                    first = false;
+                } while (!konto.matches("[0-9]{11}"));
+
+                if (JOptionPane.showConfirmDialog(
+                        application, "Nytt Org.Nr: " + orgNR + "\nNytt kontonummer: " + konto+"\n\nEr dette riktig?",
+                        "Bekreft nye data", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {return; }
+
+                String newRecords = "";
+                for (Betfor record : telepayParser.records) {
+                    newRecords += record.getRecord(false, orgNR, konto);// + "\n";
+                }
+                log.info("\n" + newRecords);
+                File tmpFile = new File(filename);
+
+                try {
+                    FileUtils.writeStringToFile(tmpFile, newRecords, "ISO-8859-1");
+                } catch (Exception writeException) {
+                    displayError(writeException.toString());
+                }
+               /* java.util.List<String> lines = Arrays.asList(newRecords.split("\n"));
+                try {
+                    FileUtils.writeLines(tmpFile, lines);
+                } catch (Exception writeException) {
+                    displayError(writeException.toString());
+                }*/
+
+
             } else if (e.getSource() == doubleCheck) {
                 Set<String> acckid = new HashSet<String>();
                 boolean foundDouble = false;
