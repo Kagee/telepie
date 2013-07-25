@@ -1,6 +1,6 @@
 package no.hild1.bank;
 
-mport java.awt.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
