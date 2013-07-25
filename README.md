@@ -1,4 +1,4 @@
-glowing-batman
+telepai
 ==============
 Viewer / validator for the Telepay 2v1 standard for payment transactions.
 
