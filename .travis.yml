@@ -1,0 +1,4 @@
+language: java
+
+notifications:
+  irc: "chat.freenode.net#telepai"
