@@ -290,16 +290,6 @@ public class TelepayGUI extends JFrame {
 
 	public static void main(String[] args) throws Exception {
 
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception e) {
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        }
-
-
             SwingUtilities.invokeLater(new Runnable()
             { public void run()  { new TelepayGUI(); } });
 	}
