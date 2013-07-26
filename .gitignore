@@ -1,7 +1,13 @@
 bin/
 target/
 Telepay/
-.settings/org.eclipse.core.resources.prefs
+.settings/
+.classpath
+.project
 .idea/
 glowing-batman.iml
 lib/
+telepie.iml
+telepie.ipr
+telepie.iws
+
