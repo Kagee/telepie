@@ -56,6 +56,8 @@
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
+               <!-- <finalName>${project.artifactId}-latest</finalName>
+                <appendAssemblyId>false</appendAssemblyId> -->
               <archive>
                 <manifest>
                   <mainClass>no.hild1.bank.TelepayGUI</mainClass>
@@ -74,7 +76,7 @@
           <compilerArgument/>
         </configuration>
       </plugin>
-        <plugin>
+       <!-- <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <version>1.7</version>
@@ -85,7 +87,7 @@
                     <configuration>
                         <target name="copy and rename file">
                             <copy file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar" tofile="${project.build.directory}/${project.artifactId}-latest.jar" />
-                            <!--<echo message="${project.build.directory}/${project.artifactId}" />-->
+                            // <echo message="${project.build.directory}/${project.artifactId}" />
                         </target>
                     </configuration>
                     <goals>
@@ -93,7 +95,7 @@
                     </goals>
                 </execution>
             </executions>
-        </plugin>
+        </plugin>   -->
     </plugins>
   </build>
 </project>
