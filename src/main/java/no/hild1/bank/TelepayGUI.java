@@ -17,7 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TelepayGUI extends JFrame {
+public class TelepayGUI extends JFrame implements Runnable {
     private static Log log = LogFactory.getLog(TelepayGUI.class);
     private JEditorPane logPane;
     JButton selectFile, closeButton, viewAllRecordsButton, copyLog, fakeFile;
@@ -122,6 +122,11 @@ public class TelepayGUI extends JFrame {
         telepayParser = null;
         viewAllRecordsButton.setEnabled(false);
         fakeFile.setEnabled(false);
+    }
+
+    @Override
+    public void run() {
+        new TelepayGUI();
     }
 
     class LocalFileDropListener implements no.hild1.bank.utils.FileDrop.Listener {
@@ -289,8 +294,6 @@ public class TelepayGUI extends JFrame {
     }
 
 	public static void main(String[] args) throws Exception {
-
-            SwingUtilities.invokeLater(new Runnable()
-            { public void run()  { new TelepayGUI(); } });
+            SwingUtilities.invokeLater(new TelepayGUI());
 	}
 }
