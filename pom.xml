@@ -40,7 +40,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+    <scm> 
+    <connection>scm:git:git@github.com:Kagee/telepie.git</connection> 
+    <url>https://github.com/Kagee/telepie</url> 
+    </scm>
   <build>
+    <finalName>${project.artifactId}-${project.version}-${buildNumber}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -74,6 +79,29 @@
           <source>1.7</source>
           <target>1.7</target>
           <compilerArgument/>
+        </configuration>
+      </plugin>
+       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+          <shortRevisionLength>6</shortRevisionLength>
+       <!--     <format>{0}{1,date,yyyy-MM-dd HH:mm:ss}</format>
+          <items>
+          <item>scmVersion</item>
+            <item>timestamp</item>
+          </items>-->
         </configuration>
       </plugin>
        <!-- <plugin>
