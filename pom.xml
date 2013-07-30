@@ -116,7 +116,7 @@
                     </goals>
                     <phase>install</phase>
                     <configuration>
-                        <file>${project.build.finalName}.${project.packaging}</file>
+                        <file>${project.artifactId}-${project.version}-${buildNumber}</file>
                         <generatePom>false</generatePom>
                         <pomFile>pom.xml</pomFile>
                         <version>${my.version}</version>
