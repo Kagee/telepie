@@ -61,6 +61,7 @@
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
+              <finalName>${project.artifactId}-${project.version}-${buildNumber}</finalName>
                <!-- <finalName>${project.artifactId}-latest</finalName>
                 <appendAssemblyId>false</appendAssemblyId> -->
               <archive>
