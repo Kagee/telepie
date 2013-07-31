@@ -62,8 +62,6 @@
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
               <finalName>${project.artifactId}-${project.version}-${buildNumber}</finalName>
-               <!-- <finalName>${project.artifactId}-latest</finalName>
-                <appendAssemblyId>false</appendAssemblyId> -->
               <archive>
                 <manifest>
                   <mainClass>no.hild1.bank.TelepayGUI</mainClass>
@@ -98,33 +96,8 @@
           <doCheck>false</doCheck>
           <doUpdate>false</doUpdate>
           <shortRevisionLength>6</shortRevisionLength>
-       <!--     <format>{0}{1,date,yyyy-MM-dd HH:mm:ss}</format>
-          <items>
-          <item>scmVersion</item>
-            <item>timestamp</item>
-          </items>-->
         </configuration>
       </plugin>
-       <!-- <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
-            <executions>
-                <execution>
-                    <id>copy</id>
-                    <phase>package</phase>
-                    <configuration>
-                        <target name="copy and rename file">
-                            <copy file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar" tofile="${project.build.directory}/${project.artifactId}-latest.jar" />
-                            // <echo message="${project.build.directory}/${project.artifactId}" />
-                        </target>
-                    </configuration>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>   -->
     </plugins>
   </build>
 </project>
