@@ -45,7 +45,12 @@
     <url>https://github.com/Kagee/telepie</url> 
     </scm>
   <build>
-    <finalName>${project.artifactId}-${project.version}-${buildNumber}</finalName>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -61,7 +66,6 @@
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
-              <finalName>${project.artifactId}-${project.version}-${buildNumber}</finalName>
               <archive>
                 <manifest>
                   <mainClass>no.hild1.bank.TelepayGUI</mainClass>
@@ -95,8 +99,8 @@
         <configuration>
           <doCheck>false</doCheck>
           <doUpdate>false</doUpdate>
-          <shortRevisionLength>6</shortRevisionLength>
-        </configuration>
+          <shortRevisionLength>8</shortRevisionLength>
+        </configuration>  
       </plugin>
     </plugins>
   </build>
