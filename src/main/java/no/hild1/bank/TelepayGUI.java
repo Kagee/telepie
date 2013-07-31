@@ -3,8 +3,6 @@ package no.hild1.bank;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -126,7 +124,7 @@ public class TelepayGUI extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        new TelepayGUI();
+        //new TelepayGUI();
     }
 
     class LocalFileDropListener implements no.hild1.bank.utils.FileDrop.Listener {
