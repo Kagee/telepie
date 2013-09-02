@@ -1,8 +1,0 @@
-language: java
-script: "mvn package"
-notifications:
-  irc: 
-    channels:
-        - "chat.freenode.net#telepai"
-    use_notice: true
-    skip_join: true 
