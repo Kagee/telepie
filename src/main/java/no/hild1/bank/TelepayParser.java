@@ -133,6 +133,12 @@ public class TelepayParser {
 		int nread;
 		while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
 			detector.handleData(buf, 0, nread);
+			for (int i = 0; i < buf.length; i++) {
+            			if( (buf[i] & 0xFF) >= 0x7F && (buf[i] & 0xFF) <= 0x9F) { 
+            				throw new TelepayParserException(file.getPath() + " is not encoded in "
+					+ "ISO-8859-1/WINDOWS-1252");	
+            			}
+        		}
 		}
 
 		fis.close();
