@@ -139,7 +139,7 @@ public class TelepayParser {
 		detector.dataEnd();
 		String encoding = detector.getDetectedCharset();
 		detector.reset();
-		log.debug("Detected encoding: " + (encoding == null ? "none" : encoding));
+		log.info("Detected encoding: " + (encoding == null ? "none" : encoding));
 		if (!("WINDOWS-1252".equals(encoding) || encoding == null)) {
 			throw new TelepayParserException(file.getPath() + " is encoded in "
 					+ encoding + ", should be ISO-8859-1/WINDOWS-1252");
