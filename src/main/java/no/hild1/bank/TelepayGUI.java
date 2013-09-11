@@ -207,16 +207,16 @@ public class TelepayGUI extends JFrame implements Runnable {
                 do {
                     orgNR = (String)JOptionPane.showInputDialog(
                             application,
-                            "Tast inn nytt Org.Nr" + ((first) ? "" : "\nOrg.Nr må være 9 siffer"),
-                            "Tast inn nytt Org.Nr",
+                            "Tast inn nytt Fnr eller Org.Nr" + ((first) ? "" : "\nFnr/Org.Nr må være 9 eller 11 siffer"),
+                            "Tast inn nytt Fnr eller Org.Nr",
                             JOptionPane.PLAIN_MESSAGE,
                             null,
                             null,
                             "");
                     if (orgNR == null) { return; }
                     first = false;
-                } while (!orgNR.matches("[0-9]{9}"));
-
+                } while (!orgNR.matches("[0-9]{9}|[0-9]{11}"));
+		if (orgNR.length() == 9) { orgNR = "00" + orgNR; }
                 String konto = "";
                 first = true;
                 do {
