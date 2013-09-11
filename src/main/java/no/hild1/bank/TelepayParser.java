@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import no.hild1.bank.telepay.Betfor.ElementInterface;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -14,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.mozilla.universalchardet.UniversalDetector;
 
 public class TelepayParser {
-
+    private static ResourceBundle error = ResourceBundle.getBundle("ErrorMessages", Locale.getDefault());
     private static Log log = LogFactory.getLog(TelepayParser.class);
     String[] lines;
     int numRecords = 0;
@@ -110,7 +112,7 @@ public class TelepayParser {
                         + "\n>" + tmp + "<");
                 String error = "Linje " + (i + 1) + " er " + tmp.length()
                         + " tegn lang, den skulle vært 80. "
-                        +"\n\nTeknisk forklaring: Sjekk logg for detaljer.";
+                        + "\n\nTeknisk forklaring: Sjekk logg for detaljer.";
                 throw new TelepayParserException(error);
             }
         }
@@ -138,12 +140,7 @@ public class TelepayParser {
             detector.handleData(buf, 0, nread);
             for (int i = 0; i < buf.length; i++) {
                 if ((buf[i] & 0xFF) >= 0x7F && (buf[i] & 0xFF) <= 0x9F) {
-                    String error = "Filen inneholder ugyldige tegn. "
-                            + "Den er antagelig ikke i tegnformatet ISO-8859-1."
-                            + "\n\nTeknisk forklaring: Fant byte med verdi mellom 0x7F og 0x9F, "
-                            + " dette intervallet er ugyldig i ISO-8859-1. Telepay-filer skal "
-                            + "være i ISO-8859-1.";
-                    throw new TelepayParserException(error);
+                    throw new TelepayParserException(error.getString("TPPINVALIDBYTES"));
                 }
             }
         }
@@ -154,11 +151,7 @@ public class TelepayParser {
         detector.reset();
         log.info("Detected encoding: " + (encoding == null ? "none" : encoding));
         if (!("WINDOWS-1252".equals(encoding) || encoding == null)) {
-            String error = "Filen inneholder ugyldige tegn. "
-                    + "Den er antagelig ikke i tegnformatet ISO-8859-1."
-                    + "\n\nTeknisk forklaring: Detektert tegnformat er " + encoding
-                    + ". Telepay-filer skal være i ISO-8859-1";
-            throw new TelepayParserException(error);
+            throw new TelepayParserException(String.format(error.getString("TPPWRONGENCODING"), encoding));
         }
     }
 }
