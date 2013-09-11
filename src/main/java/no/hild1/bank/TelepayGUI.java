@@ -78,7 +78,7 @@ public class TelepayGUI extends JFrame implements Runnable {
         panel.add(doubleCheck);
 
         panel.add(Box.createHorizontalGlue());
-        fakeFile = new JButton("Sjekk for doble betalinger");
+        fakeFile = new JButton("Lag testfil");
         fakeFile.setEnabled(false);
         fakeFile.addActionListener(localActionListener);
         panel.add(fakeFile);
