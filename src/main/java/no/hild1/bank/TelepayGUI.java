@@ -153,7 +153,7 @@ public class TelepayGUI extends JFrame implements Runnable {
                 doubleCheck.setEnabled(true);
             } catch (TelepayParserException e1) {
                 resetApp();
-                displayError(e1.toString());
+                displayError(e1.getMessage());
             }
     }
     private void showRecords() {
